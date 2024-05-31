@@ -1,9 +1,8 @@
-﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using MusicalBot.YTtools;
-using NAudio.Wave;
-using DSharpPlus.Entities;
 using DSharpPlus.VoiceNext;
+using DSharpPlus.Entities;
 using System.Diagnostics;
 using NovoBot;
 
@@ -12,8 +11,8 @@ namespace MusicalBot.Commands
     public class VoiceCommands : BaseCommandModule
     {
         private CancellationTokenSource _cts = new();
-        private WaveFormat _waveFormat = new(48000, 16, 2);
-
+        private PlayingTools _pt = new();
+        
         [Command("play")]
         [Aliases("p", "toca")]
         public async Task MusicDownload(CommandContext context, params string[] args)
@@ -49,13 +48,12 @@ namespace MusicalBot.Commands
                 {
                     await YtTools.Download(Bot.Filas[context.Guild.Id][0]);
 
-                    string path = getPath(context);
+                    string path = _pt.getPath(context);
 
-                    await PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0]);
-
+                    await _pt.PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0], _cts.Token);
+                    _cts.Cancel();
                     Bot.Filas[context.Guild.Id].RemoveAt(0);
                     File.Delete(path);
-
                 }
             }
             return;
@@ -65,7 +63,7 @@ namespace MusicalBot.Commands
         [Aliases("quit", "leave")]
         public async Task Sai(CommandContext context)
         {
-            string path = getPath(context);
+            string path = _pt.getPath(context);
 
             var vnext = context.Client.GetVoiceNext();
             var connection = vnext.GetConnection(context.Guild);
@@ -93,7 +91,7 @@ namespace MusicalBot.Commands
             }
             if(connection.IsPlaying && connection.TargetChannel == context.Member.VoiceState.Channel)
             {
-                string path = getPath(context);
+                string path = _pt.getPath(context);
 
                 try
                 {
@@ -101,6 +99,7 @@ namespace MusicalBot.Commands
                 }
                 catch (Exception ex) { await context.Channel.SendMessageAsync(ex.Message); }
 
+                _cts.Cancel();
                 File.Delete(path);
                 Bot.Filas[context.Guild.Id].RemoveAt(0);
             }
@@ -114,10 +113,10 @@ namespace MusicalBot.Commands
 
                 await YtTools.Download(Bot.Filas[context.Guild.Id][0]);
 
-                string path = getPath(context);
+                string path = _pt.getPath(context);
                 try
                 {
-                    await PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0]);
+                    await _pt.PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0], _cts.Token);
                 }
                 catch (Exception ex) { await context.Channel.SendMessageAsync(ex.Message); }
 
@@ -128,102 +127,16 @@ namespace MusicalBot.Commands
             return;
         }
 
-        [Command("d")]
-        private async Task download(CommandContext context, params string[] args)
+        [Command("teste")]
+        private async Task teste(CommandContext context)
         {
-            string msg = "";
-
-            foreach (string arg in args)
+            foreach (ulong id in Bot.Filas.Keys)
             {
-                msg += arg + " ";
-            }
-            
-            await YtTools.Download(msg);
-        }
-        private async Task PlayAudioAsync(CommandContext ctx, VoiceNextConnection connection, string filePath, string msg)
-        {            
-            if (!File.Exists(filePath))
-            {
-                Console.WriteLine($"O arquivo {filePath} não existe");
-                return;
-            }
-
-            if (ConfigHandler.Linux)
-            {
-                try
+                foreach (string nome in Bot.Filas[id])
                 {
-                    using (var ffmpeg = CreateProcess(filePath))
-                    using (var output = ffmpeg.StandardOutput.BaseStream)
-                    using (var transmit = connection.GetTransmitSink())
-                    {
-                        await output.CopyToAsync(transmit, null, _cts.Token);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await ctx.RespondAsync($"Erro ao tocar o arquivo: {ex.Message}");
+                    Console.WriteLine(nome);
                 }
             }
-            else
-            {
-                try
-                {
-                    using (var mediaReader = new MediaFoundationReader(filePath))
-                    {
-                        using (var resampler = new MediaFoundationResampler(mediaReader, _waveFormat))
-                        {
-                            resampler.ResamplerQuality = 60;
-
-                            var buffer = new byte[1024];
-                            int bytesRead;
-
-                            var transmit = connection.GetTransmitSink();
-                            await ctx.Channel.SendMessageAsync($"Tocando agora: {msg}");
-
-                            while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                await transmit.WriteAsync(buffer, 0, bytesRead, _cts.Token);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await ctx.RespondAsync($"Ocorreu um erro: {ex.Message}");
-                }
-            }
-            return;
-        }
-        private Process CreateProcess(string filePath)
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "ffmpeg",
-                Arguments = $"-i \"{filePath}\" -ac 2 -f s16le -ar 48000 pipe:1",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            return Process.Start(psi);
-        }
-        private string? getPath(CommandContext context)
-        {
-            if(Bot.Filas[context.Guild.Id].Count() == 0)
-            {
-                return null;
-            }
-            
-            string musicPath;
-
-            if (ConfigHandler.Linux)
-            {
-                musicPath = "/musics/";
-            }
-            else { musicPath = @"\musics\"; }
-
-            string path = Directory.GetCurrentDirectory() + $@"{musicPath}{Bot.Filas[context.Guild.Id].FirstOrDefault().Replace(' ', '_')}.mp3";
-
-            return path;
         }
     }
 }
