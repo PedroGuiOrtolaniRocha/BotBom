@@ -101,12 +101,12 @@ namespace MusicalBot.Tools
 
             if(!Bot.Filas[context.Guild.Id].FirstOrDefault().Contains("www.youtube"))
             {
-                path = Directory.GetCurrentDirectory() + $@"{musicPath}{queue.FirstOrDefault().Replace(' ', '_')}.mp3";
+                path = Directory.GetCurrentDirectory() + $@"{musicPath}{queue.FirstOrDefault()[0].Replace(' ', '_')}.mp3";
             }
             else 
             {
                 Console.WriteLine("aq");
-                string music = queue[0];
+                string music = queue[0][0];
                 if (music.Contains('&'))
                 {
                     music = music.Remove(music.IndexOf('&'));

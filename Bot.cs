@@ -14,7 +14,7 @@ namespace MusicalBot
     {
         private static DiscordClient _client { get; set; }
         private static CommandsNextExtension _commands { get; set; }
-        public static Dictionary<ulong, List<string>> Filas { get; set; }
+        public static Dictionary<ulong, List<string[]>> Filas { get; set; }
 
         public static async Task Run()
         {
@@ -23,7 +23,7 @@ namespace MusicalBot
             _client = new DiscordClient(CfHandler.ClientConfig);
             _client.UseVoiceNext();
 
-            Filas = new Dictionary<ulong, List<string>>();
+            Filas = new Dictionary<ulong, List<string[]>>();
 
             _client.Ready += _client_Ready;
             _commands = _client.UseCommandsNext(CfHandler.CommandsConfig);
@@ -46,7 +46,7 @@ namespace MusicalBot
 
                 if (!Filas.ContainsKey(server.Value.Id))
                 {
-                    Filas.Add(server.Value.Id, new List<string>());
+                    Filas.Add(server.Value.Id, new List<string[]>());
                 }
                 
                 if (ConfigHandler.Linux)
