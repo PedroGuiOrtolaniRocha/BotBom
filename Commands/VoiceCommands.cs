@@ -101,7 +101,7 @@ namespace MusicalBot.Commands
             var connection = vnext.GetConnection(context.Guild);
             if(connection == null)
             {
-                await context.RespondAsync("Náo estou tocando nada");
+                await context.RespondAsync("Não estou tocando nada");
                 return;
             }
             var channel = connection.TargetChannel;
@@ -174,7 +174,7 @@ namespace MusicalBot.Commands
                 await context.Channel.SendMessageAsync("Para pular a musica que esta tocando use o comando Pula");
                 return;
             }
-            if(index > Bot.Filas[context.Guild.Id].Count() +1)
+            if(index > Bot.Filas[context.Guild.Id].Count())
             {
                 await context.Channel.SendMessageAsync("Verifque a posição correta da musica na fila");
                 return;
