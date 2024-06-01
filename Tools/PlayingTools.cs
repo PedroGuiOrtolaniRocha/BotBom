@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using AngleSharp.Dom;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.VoiceNext;
 using NAudio.Wave;
 using NovoBot;
@@ -9,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicalBot.Commands
+namespace MusicalBot.Tools
 {
-    public class PlayingTools    
+    public class PlayingTools
     {
         public async ValueTask PlayAudioAsync(CommandContext ctx, VoiceNextConnection connection, string filePath, string msg, CancellationToken cts)
         {
@@ -82,12 +83,15 @@ namespace MusicalBot.Commands
         }
         public string? getPath(CommandContext context)
         {
-            if (Bot.Filas[context.Guild.Id].Count() == 0)
+            var queue = Bot.Filas[context.Guild.Id];
+
+            if (queue.Count() == 0)
             {
                 return null;
             }
 
             string musicPath;
+            string path ="";
 
             if (ConfigHandler.Linux)
             {
@@ -95,7 +99,23 @@ namespace MusicalBot.Commands
             }
             else { musicPath = @"\musics\"; }
 
-            string path = Directory.GetCurrentDirectory() + $@"{musicPath}{Bot.Filas[context.Guild.Id].FirstOrDefault().Replace(' ', '_')}.mp3";
+            if(!Bot.Filas[context.Guild.Id].FirstOrDefault().Contains("www.youtube"))
+            {
+                path = Directory.GetCurrentDirectory() + $@"{musicPath}{queue.FirstOrDefault().Replace(' ', '_')}.mp3";
+            }
+            else 
+            {
+                Console.WriteLine("aq");
+                string music = queue[0];
+                if (music.Contains('&'))
+                {
+                    music = music.Remove(music.IndexOf('&'));
+                }
+                music = music.Remove(0, music.IndexOf('=') + 1);
+                string musicFile = music.Trim();
+                path = Directory.GetCurrentDirectory() + $@"{musicPath}{musicFile.Replace(' ', '_')}.mp3";
+            }
+            
 
             return path;
         }

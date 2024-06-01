@@ -26,10 +26,18 @@ namespace MusicalBot.YTtools
             {
                 url = await UrlByTitle(msg);
             }
-            else { url = msg; }
+            else
+            {
+                if (msg.Contains('&'))
+                {
+                    msg = msg.Remove(msg.IndexOf('&'));
+                }
+                msg = msg.Remove(0, msg.IndexOf('=')+1);
+                url = msg.Trim();
+            }
 
             YoutubeClient yt = new YoutubeClient();
-
+            msg = msg.Trim();
             msg = msg.Replace(' ', '_');
 
             if (ConfigHandler.Linux)
@@ -37,10 +45,11 @@ namespace MusicalBot.YTtools
                 path = $"musics/{msg}.mp3";
             }
             else {path = $@"musics\{msg}.mp3"; }
+            
 
             var manifest = await yt.Videos.Streams.GetManifestAsync(url);
+            Console.WriteLine(manifest.ToString());
             var video = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
-
             await yt.Videos.Streams.DownloadAsync(video, path);
 
         }

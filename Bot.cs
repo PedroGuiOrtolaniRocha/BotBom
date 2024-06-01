@@ -32,6 +32,12 @@ namespace MusicalBot
 
             await Task.Delay(-1);
         }
+
+        public async static Task Shutdown()
+        { 
+            await _client.DisconnectAsync();
+            _client.Dispose();
+        }
         private static Task _client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)
         {
             foreach(var server in _client.Guilds)
