@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.VoiceNext;
+using MusicalBot.YTtools;
 using NAudio.Wave;
 using NovoBot;
 using System;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YoutubeExplode.Videos;
 
 namespace MusicalBot.Tools
 {
@@ -118,6 +120,42 @@ namespace MusicalBot.Tools
             
 
             return path;
+        }
+        
+        public async Task AddToQueue(CommandContext context, string msg, int index = 0)
+        {
+            if(index == 0)
+            {
+                if (msg.Contains("list=") && msg.Contains("youtube.com"))
+                {
+
+                    var playlist = await YtTools.PlaylistToQueue(msg);
+                    foreach (var video in playlist)
+                    {
+                        Bot.Filas[context.Guild.Id].Add(video);
+                    }
+                    await context.Channel.SendMessageAsync($"adicionando {playlist.Count()} musicas á fila");
+                }
+                else
+                {
+                    var music = await YtTools.VideoToQueue(msg);
+                    Bot.Filas[context.Guild.Id].Add(music);
+                    await context.Channel.SendMessageAsync($"adicionando {music[1]} á fila");
+                }
+            }
+            else 
+            {
+                if (msg.Contains("list=") && msg.Contains("youtube.com"))
+                {
+                    return;
+                }
+                else
+                {
+                    var music = await YtTools.VideoToQueue(msg);
+                    Bot.Filas[context.Guild.Id].Insert(index, music);
+                    await context.Channel.SendMessageAsync($"adicionando {music[1]} á fila, na {index +1}ª posição");
+                }
+            }
         }
     }
 }

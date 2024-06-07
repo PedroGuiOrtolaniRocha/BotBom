@@ -42,6 +42,7 @@ namespace MusicalBot.YTtools
         public static async ValueTask<List<string[]>> PlaylistToQueue(string msg)
         {
             YoutubeClient yt = new YoutubeClient();
+            
             var Id = PlaylistId.Parse(msg);
             var playlist = await yt.Playlists.GetVideosAsync(Id);
 
