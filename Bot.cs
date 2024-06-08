@@ -27,7 +27,7 @@ namespace MusicalBot
 
             _client.Ready += _client_Ready;
             _commands = _client.UseCommandsNext(CfHandler.CommandsConfig);
-            _commands.RegisterCommands<VoiceCommands>();
+            _commands.RegisterCommands<MusicCommands>();
             await _client.ConnectAsync();
 
             await Task.Delay(-1);

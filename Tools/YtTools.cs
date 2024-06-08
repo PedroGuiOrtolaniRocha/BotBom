@@ -1,17 +1,9 @@
 ﻿using YouTubeSearch;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
 using YoutubeExplode;
 using YoutubeExplode.Common;
-using YoutubeExplode.Converter;
-using YoutubeExplode.Search;
 using YoutubeExplode.Videos.Streams;
-using System.Collections.ObjectModel;
 using NovoBot;
-using AngleSharp.Common;
 using YoutubeExplode.Playlists;
-using AngleSharp.Dom;
 using YoutubeExplode.Videos;
 
 namespace MusicalBot.YTtools

@@ -13,6 +13,7 @@ namespace NovoBot
     public class ConfigHandler
     {
         private static string _jsonPath;
+        
         private Dictionary<string, string> _jsonValues;
         public string Token { get; private set; }
         public string Prefix { get; private set; }
@@ -33,6 +34,8 @@ namespace NovoBot
                 _jsonPath = Directory.GetCurrentDirectory() + @"\config.json";
             }
 
+            VerifyOrCreateJson();
+            VerifyOrCreateMusicsDir();
 
             string json = File.ReadAllText(_jsonPath);
             
@@ -47,15 +50,21 @@ namespace NovoBot
 
             Token = _jsonValues["token"];
             Prefix = _jsonValues["prefix"];
-
-            ClientConfig = new DiscordConfiguration()
+            try
             {
-                Intents = DiscordIntents.All,
-                Token = this.Token,
-                TokenType = TokenType.Bot,
-                AutoReconnect = true
-            };
-
+                ClientConfig = new DiscordConfiguration()
+                {
+                    Intents = DiscordIntents.All,
+                    Token = this.Token,
+                    TokenType = TokenType.Bot,
+                    AutoReconnect = true
+                };
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("O token não esta preenchido ou esta incorreto");
+                Console.ReadKey();
+            }
             CommandsConfig = new CommandsNextConfiguration()
             {
                 StringPrefixes = new String[] { Prefix },
@@ -65,6 +74,40 @@ namespace NovoBot
                 EnableDefaultHelp = false,
                 
             };
+        }
+
+        private void VerifyOrCreateJson()
+        {
+            if (!File.Exists(_jsonPath))
+            {
+                var jsonValues = new Dictionary<string, string>();
+                jsonValues.Add("prefix", "$");
+                jsonValues.Add("token", "");
+                var contnet = JsonSerializer.Serialize(jsonValues);
+
+                using( var writer = new StreamWriter(_jsonPath))
+                {
+                    writer.Write(contnet);
+                }
+            }
+            return;
+        }
+
+        private void VerifyOrCreateMusicsDir()
+        {
+            string path = Directory.GetCurrentDirectory();
+            if (Linux)
+            {
+                path += "/musics/";
+            }
+            else 
+            {
+                path += @"\musics\";
+            }
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

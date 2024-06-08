@@ -9,7 +9,7 @@ using Microsoft.VisualBasic;
 
 namespace MusicalBot.Commands
 {
-    public class VoiceCommands : BaseCommandModule
+    public class MusicCommands : BaseCommandModule
     {
         private CancellationTokenSource _cts = new();
         private PlayingTools _pt = new();
