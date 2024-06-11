@@ -176,7 +176,7 @@ namespace MusicalBot.Commands
             string msg = "";
 
             foreach (string arg in args)
-            {
+            { 
                 msg += arg + " ";
             }
 

@@ -12,12 +12,10 @@ namespace NovoBot
 {
     public class ConfigHandler
     {
-        private static string _jsonPath;
-        
+        private static string? _jsonPath;
         private Dictionary<string, string> _jsonValues;
         public string Token { get; private set; }
         public string Prefix { get; private set; }
-
         public DiscordConfiguration ClientConfig { get; private set; }
         public CommandsNextConfiguration CommandsConfig { get; private set; }
         public static bool Linux { get; private set; }
@@ -72,7 +70,6 @@ namespace NovoBot
                 EnableDms = true,
                 EnableMentionPrefix = false,
                 EnableDefaultHelp = false,
-                
             };
         }
 
