@@ -1,16 +1,27 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta charset="UTF-8" />
     <link rel="stylesheet" href="style.css" />
-    <title>Discord Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
   </head>
-  <body class="container">
-    <h1>Bem-vindo!</h1>
-    <div class="url_input">
-      <h3>Insira a URL ou o nome da música</h3>
-      <input type="text" />
-    </div>
-    <button type="submit">Search</button>
+  <body>
+    <body class="container">
+      <h1>Bem-vindo!</h1>
+      <div class="url_input">
+        <h3>Insira a URL ou o nome da música</h3>
+        <input type="text" class="url_value" />
+      </div>
+      <div class="aqui"></div>
+      <select name="prefix" class="prefix">
+        <option value="!">!play</option>
+        <option value="@">@play</option>
+        <option value="#">#play</option>
+        <option value="+">+play</option>
+      </select>
+      <button type="button" class="submit">Search</button>
+      <script src="teste.js"></script>
+    </body>
   </body>
-  <script src="style.css"></script>
 </html>
