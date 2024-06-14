@@ -15,7 +15,7 @@ namespace NovoBot
         private static string? _jsonPath;
         private Dictionary<string, string> _jsonValues;
         public string Token { get; private set; }
-        public string Prefix { get; private set; }
+        public static string Prefix { get; private set; }
         public DiscordConfiguration ClientConfig { get; private set; }
         public CommandsNextConfiguration CommandsConfig { get; private set; }
         public static bool Linux { get; private set; }

@@ -137,19 +137,6 @@ namespace MusicalBot.Commands
             }
             return;
         }
-        [Command("fila")]
-        [Aliases("queue", "list", "lista", "f")]
-        public async Task Fila(CommandContext context)
-        {
-            string queue = "Essas são os pedidos na fila:\n";
-            foreach (string[] music in Bot.Filas[context.Guild.Id])
-            {
-                queue += $"{Bot.Filas[context.Guild.Id].IndexOf(music) + 1} - {music[1]}\n";
-            }
-
-            await context.Channel.SendMessageAsync(queue);
-            return;
-        }
 
         [Command("tira")]
         [Aliases("remove", "retira", "rm")]
