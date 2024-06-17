@@ -25,7 +25,7 @@ def run():
     
     with sync_playwright() as playwright:
 
-        browser = playwright.chromium.launch()
+        browser = playwright.chromium.launch(headless=False)
         context = browser.new_context(
             viewport={'width': 1920, 'height': 1080},
             device_scale_factor=1
@@ -108,6 +108,8 @@ def run():
 
         page.click(save_button_selector)
         
+        time.sleep(2)
+
         reset_button_selector = 'button[type="button"][class*="button-f2h6uQ"]'
         page.click(reset_button_selector)
 

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicalBot", "MusicalBot.csproj", "{E7428162-1EF8-40E7-B173-030357BCD01D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotBom", "BotBom.csproj", "{E7428162-1EF8-40E7-B173-030357BCD01D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

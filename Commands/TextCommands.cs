@@ -38,8 +38,6 @@ namespace MusicalBot.Commands
             db705d0c-4898-49ed-b411-36d6e81c2f36
             """;
 
-        private string _queueMessage;
-
         private DiscordEmbedBuilder _helpEmbed = new()
         {
             Color = DiscordColor.Red,
@@ -58,6 +56,10 @@ namespace MusicalBot.Commands
         [Aliases("queue", "list", "lista", "f")]
         public async Task Fila(CommandContext context)
         {
+            if(Bot.Filas == null )
+            {
+                return;
+            }
             string queue = "";
             foreach (string[] music in Bot.Filas[context.Guild.Id])
             {

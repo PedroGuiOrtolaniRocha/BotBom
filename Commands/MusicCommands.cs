@@ -18,6 +18,10 @@ namespace MusicalBot.Commands
         [Aliases("p", "toca")]
         public async Task MusicDownload(CommandContext context, params string[] args)
         {
+            if(context.Member == null || Bot.Filas == null )
+            {
+                return;
+            }
             if (context.Member.VoiceState == null)
             {
                 await context.RespondAsync("Entre em um canal de voz");
@@ -52,7 +56,7 @@ namespace MusicalBot.Commands
                 {
                     await YtTools.Download(Bot.Filas[context.Guild.Id][0][0]);
 
-                    string path = _pt.getPath(context);
+                    string path = _pt.getPath(context) ?? "";
 
                     await _pt.PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0][1], _cts.Token);
                     _cts.Cancel();
@@ -67,7 +71,11 @@ namespace MusicalBot.Commands
         [Aliases("quit", "leave")]
         public async Task Sai(CommandContext context)
         {
-            string path = _pt.getPath(context);
+            if(Bot.Filas == null )
+            {
+                return;
+            }
+            string path = _pt.getPath(context) ?? "";
 
             var vnext = context.Client.GetVoiceNext();
             var connection = vnext.GetConnection(context.Guild);
@@ -77,6 +85,8 @@ namespace MusicalBot.Commands
             File.Delete(path);
             Bot.Filas[context.Guild.Id].Clear();
             _cts.Cancel();
+
+            await context.Channel.SendMessageAsync("Obrigado por usar o bot!");
             return;
         }
 
@@ -84,15 +94,21 @@ namespace MusicalBot.Commands
         [Aliases("next")]
         public async Task Pula(CommandContext context, int removes = 1)
         {
+            if(context.Member == null || Bot.Filas == null )
+            {
+                return;
+            }
+
             var vnext = context.Client.GetVoiceNext();
             var connection = vnext.GetConnection(context.Guild);
+
             if (connection == null)
             {
                 await context.RespondAsync("Não estou tocando nada");
                 return;
             }
             var channel = connection.TargetChannel;
-            if (Bot.Filas[context.Guild.Id].Count() < removes)
+            if (Bot.Filas[context.Guild.Id].Count < removes)
             {
                 await context.RespondAsync("Não tem tantas faixas para serem puladas");
                 return;
@@ -104,7 +120,7 @@ namespace MusicalBot.Commands
             }
             if (connection.IsPlaying && connection.TargetChannel == context.Member.VoiceState.Channel)
             {
-                string path = _pt.getPath(context);
+                string path = _pt.getPath(context) ?? "";
 
                 try
                 {
@@ -128,7 +144,7 @@ namespace MusicalBot.Commands
             {
                 await YtTools.Download(Bot.Filas[context.Guild.Id][0][0]);
 
-                string path = _pt.getPath(context);
+                string path = _pt.getPath(context) ?? "";
 
                 await _pt.PlayAudioAsync(context, connection, path, Bot.Filas[context.Guild.Id][0][1], _cts.Token);
                 _cts.Cancel();
@@ -142,6 +158,11 @@ namespace MusicalBot.Commands
         [Aliases("remove", "retira", "rm")]
         public async Task Tira(CommandContext context, int index)
         {
+            if(Bot.Filas == null)
+            {
+                return;
+            }
+            
             if (index <= 1)
             {
                 await context.Channel.SendMessageAsync("Para pular a musica que esta tocando use o comando Pula");

@@ -12,15 +12,19 @@ namespace MusicalBot
 {
     public static class Bot
     {
-        private static DiscordClient _client { get; set; }
-        private static CommandsNextExtension _commands { get; set; }
-        public static Dictionary<ulong, List<string[]>> Filas { get; set; }
+        private static DiscordClient? _client { get; set; }
+        private static CommandsNextExtension? _commands { get; set; }
+        public static Dictionary<ulong, List<string[]>>? Filas { get; set; }
 
         public static async Task Run()
         {
             ConfigHandler CfHandler = new();
 
             _client = new DiscordClient(CfHandler.ClientConfig);
+            if(CfHandler.CommandsConfig == null)
+            {
+                return;
+            }
             _client.UseVoiceNext();
 
             Filas = new Dictionary<ulong, List<string[]>>();
@@ -37,14 +41,26 @@ namespace MusicalBot
 
         public async static Task Shutdown()
         { 
-            await _client.DisconnectAsync();
-            _client.Dispose();
+            if(_client != null)
+            {
+                await _client.DisconnectAsync();
+                _client.Dispose();    
+            }
         }
         private static Task _client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)
         {
+            if(_client == null)
+            {
+                return Task.CompletedTask;
+            }
             foreach(var server in _client.Guilds)
             {
                 string musicPath;
+
+                if(Filas == null)
+                {
+                    return Task.CompletedTask;
+                }
 
                 if (!Filas.ContainsKey(server.Value.Id))
                 {

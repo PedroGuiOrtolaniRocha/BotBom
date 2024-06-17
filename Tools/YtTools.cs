@@ -77,7 +77,14 @@ namespace MusicalBot.YTtools
         {
             VideoSearch vs = new VideoSearch();
             var videos = await vs.GetVideosPaged(title, 1);
-            return videos.FirstOrDefault().getUrl();
+            var video = videos.FirstOrDefault();
+            
+            if (video != null)
+            {
+                return video.getUrl();
+            }
+            
+            return "";
         }
     }
 }

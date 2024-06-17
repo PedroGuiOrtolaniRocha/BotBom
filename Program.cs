@@ -14,10 +14,10 @@ namespace MusicalBot
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnCancelKeyPress);
             await Bot.Run();
         }
-        static void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        static async void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             Console.WriteLine("Ctrl+C pressionado. Finalizando aplicativo...");
-            Bot.Shutdown();
+            await Bot.Shutdown();
             Environment.Exit(0); 
         }
     }

@@ -81,13 +81,17 @@ namespace MusicalBot.Tools
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
-            return Process.Start(psi);
+            return Process.Start(psi) ?? new Process();
         }
         public string? getPath(CommandContext context)
         {
+            if(Bot.Filas == null )
+            {
+                return null;
+            }
             var queue = Bot.Filas[context.Guild.Id];
 
-            if (queue.Count() == 0)
+            if (queue.Count() == 0 || queue == null)
             {
                 return null;
             }
@@ -101,7 +105,7 @@ namespace MusicalBot.Tools
             }
             else { musicPath = @"\musics\"; }
 
-            if(!Bot.Filas[context.Guild.Id].FirstOrDefault().Contains("www.youtube"))
+            if(!queue.FirstOrDefault().Contains("www.youtube"))
             {
                 path = Directory.GetCurrentDirectory() + $@"{musicPath}{queue.FirstOrDefault()[0].Replace(' ', '_')}.mp3";
             }
@@ -124,6 +128,11 @@ namespace MusicalBot.Tools
         
         public async Task AddToQueue(CommandContext context, string msg, int index = 0)
         {
+            if(Bot.Filas == null )
+            {
+                return;
+            }
+            
             if(index == 0)
             {
                 if (msg.Contains("list=") && msg.Contains("youtube.com"))

@@ -13,11 +13,11 @@ namespace NovoBot
     public class ConfigHandler
     {
         private static string? _jsonPath;
-        private Dictionary<string, string> _jsonValues;
-        public string Token { get; private set; }
-        public static string Prefix { get; private set; }
-        public DiscordConfiguration ClientConfig { get; private set; }
-        public CommandsNextConfiguration CommandsConfig { get; private set; }
+        private Dictionary<string, string>? _jsonValues;
+        public string? Token { get; private set; }
+        public static string? Prefix { get; private set; }
+        public DiscordConfiguration? ClientConfig { get; private set; }
+        public CommandsNextConfiguration? CommandsConfig { get; private set; }
         public static bool Linux { get; private set; }
         public ConfigHandler()
         {
@@ -37,13 +37,11 @@ namespace NovoBot
 
             string json = File.ReadAllText(_jsonPath);
             
-            try
+            _jsonValues = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            
+            if(_jsonValues == null)
             {
-                _jsonValues = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-            }
-            catch (ArgumentNullException e)
-            {
-                throw new Exception("Json não encontrado" + e.Message);
+                return;
             }
 
             Token = _jsonValues["token"];
@@ -60,7 +58,7 @@ namespace NovoBot
             }
             catch (Exception e)
             {
-                Console.WriteLine("O token não esta preenchido ou esta incorreto");
+                Console.WriteLine("O token não esta preenchido ou esta incorreto " + e.Message);
                 Console.ReadKey();
             }
             CommandsConfig = new CommandsNextConfiguration()
@@ -80,9 +78,14 @@ namespace NovoBot
                 var jsonValues = new Dictionary<string, string>();
                 jsonValues.Add("prefix", "$");
                 jsonValues.Add("token", "");
+                jsonValues.Add("email", "");
+                jsonValues.Add("password", "");
+                jsonValues.Add("userName", "");
+                jsonValues.Add("invite", "");
+
                 var contnet = JsonSerializer.Serialize(jsonValues);
 
-                using( var writer = new StreamWriter(_jsonPath))
+                using( var writer = new StreamWriter(_jsonPath ?? "./"))
                 {
                     writer.Write(contnet);
                 }
