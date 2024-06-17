@@ -90,8 +90,9 @@ namespace MusicalBot.Tools
                 return null;
             }
             var queue = Bot.Filas[context.Guild.Id];
+            var toPlay = queue.FirstOrDefault();
 
-            if (queue.Count() == 0 || queue == null)
+            if (queue == null || queue.Count() == 0 || toPlay == null)
             {
                 return null;
             }
@@ -105,9 +106,10 @@ namespace MusicalBot.Tools
             }
             else { musicPath = @"\musics\"; }
 
-            if(!queue.FirstOrDefault().Contains("www.youtube"))
+
+            if(!toPlay.Contains("www.youtube"))
             {
-                path = Directory.GetCurrentDirectory() + $@"{musicPath}{queue.FirstOrDefault()[0].Replace(' ', '_')}.mp3";
+                path = Directory.GetCurrentDirectory() + $@"{musicPath}{toPlay[0].Replace(' ', '_')}.mp3";
             }
             else 
             {
