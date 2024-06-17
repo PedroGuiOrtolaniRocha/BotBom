@@ -25,7 +25,7 @@ def run():
     
     with sync_playwright() as playwright:
 
-        browser = playwright.chromium.launch(headless=False)
+        browser = playwright.chromium.launch()
         context = browser.new_context(
             viewport={'width': 1920, 'height': 1080},
             device_scale_factor=1
@@ -49,7 +49,6 @@ def run():
 
         has_bot = False
 
-        print(len(cards))
         if len(cards) != 0:
         
             has_bot = True
@@ -75,11 +74,8 @@ def run():
 
         while(page.url == "https://discord.com/developers/applications"):
             time.sleep(1)
-            print(page.url)
             page.reload()
-        
-        print(page.url)
-        
+                
         if page.url.endswith("information"):
             page.goto(page.url.replace("information","bot"))
 
@@ -140,7 +136,6 @@ def run():
 
         invite_url = f'https://discord.com/oauth2/authorize?client_id={bot_id}&permissions=8&integration_type=0&scope=bot'
 
-        #return sets
         values = [token, invite_url]
 
         return values
