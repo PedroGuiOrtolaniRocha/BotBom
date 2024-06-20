@@ -4,6 +4,8 @@ button {
   padding: 10px;
   background-color: #248046;
   color: white;
+  border: 1;
+  border-radius: 5px;
 }
 body {
   background-color: #313338;
@@ -22,4 +24,17 @@ input {
   padding: 10px 10px 15px;
   border: none;
   margin-top: 1%;
+  font-size: medium;
+  border-radius: 5px;
+}
+.prefix {
+  background-color: #1e1f22;
+  color: white;
+  width: 500px;
+  padding: 10px 10px 15px;
+  border: none;
+  margin-top: 1%;
+  text-align: center;
+  font-size: medium;
+  border-radius: 5px;
 }
